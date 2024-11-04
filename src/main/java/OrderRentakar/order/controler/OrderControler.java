@@ -26,7 +26,7 @@ public class OrderControler {
         return orderService.getOrderById(id);
     }
 
-    @PostMapping("/orders")
+    @PostMapping("/order")
     public Order saveOrder(@RequestBody Order order) {
         return orderService.saveOrder(order);
     }
