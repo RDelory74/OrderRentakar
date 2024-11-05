@@ -40,4 +40,9 @@ public class OrderControler {
         orderService.deleteOrder(id);
         return null;
     }
+    @GetMapping("/orders/user/{userId}")
+    public List<Order> getOrdersByUserId(@PathVariable int userId) {
+        return orderService.getOrderByUserId(userId);
+
+    }
 }
