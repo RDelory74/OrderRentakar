@@ -2,7 +2,6 @@ package OrderRentakar.order.controler;
 
 
 import OrderRentakar.order.model.Order;
-import OrderRentakar.order.repository.OrderRepository;
 import OrderRentakar.order.service.OrderService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +29,10 @@ public class OrderControler {
     public Order saveOrder(@RequestBody Order order) {
         return orderService.saveOrder(order);
     }
+    @PostMapping("/order/new")
+    public Order createOrder(@RequestBody Order order) {
+        return orderService.createOrder(order);
+    }
 
     @PutMapping("/order/{id}")
     public Order updateOrder(@PathVariable int id, @RequestBody Order order) {
@@ -44,5 +47,9 @@ public class OrderControler {
     public List<Order> getOrdersByUserId(@PathVariable int userId) {
         return orderService.getOrderByUserId(userId);
 
+    }
+    @GetMapping("/orders/vehicule/{vehiculeId}")
+    public List<Order> getOrdersByVehiculeId(@PathVariable int vehiculeId) {
+        return orderService.getOrderByVehiculeId(vehiculeId);
     }
 }
