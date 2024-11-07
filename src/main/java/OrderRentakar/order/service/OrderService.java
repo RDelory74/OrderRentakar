@@ -167,9 +167,21 @@ public class OrderService {
     }
 
     public double calculateAmount (Order order) {
-        double prixBase = (calculateDayBooked(order.getStartDate(),order.getEndDate())*(getDisplacementByVehiculeId(order.getVehiculeId()/10)));
-        double prixKm = (getHorsePowerByVehiculeId(order.getVehiculeId()/100));
+        double priceBase = (calculateDayBooked(order.getStartDate(),order.getEndDate())*(getDisplacementByVehiculeId(order.getVehiculeId()/10)));
+        double priceKm = (getHorsePowerByVehiculeId(order.getVehiculeId()/100));
+        if (getVehiculeTypeById(order.getVehiculeId()).equalsIgnoreCase("voiture")){
+            double Amount = priceBase + (priceKm*order.getKilometreEstimation());
+            return Amount;
+        } else if (getVehiculeTypeById(order.getVehiculeId()).equalsIgnoreCase("moto")){
+            double Amount = priceBase + getDisplacementByVehiculeId(order.getVehiculeId())*0.001 +(priceKm*order.getKilometreEstimation());
+            return Amount;
+        } else if (getVehiculeTypeById(order.getVehiculeId()).equalsIgnoreCase("utilitaire")){
+            double Amount = priceBase + getVehiculeCargoById(order.getVehiculeId())*0.05 + (priceKm*order.getKilometreEstimation());
+            return Amount;
+        }
+        return calculateAmount(order);
     }
+
 
     public int getHorsePowerByVehiculeId(int vehiculeId) {
         try {
@@ -198,6 +210,63 @@ public class OrderService {
             throw new RuntimeException("Horse Power fetching impossible", e);
         }
     }
+
+    public String getVehiculeTypeById(int vehiculeId){
+        try {
+            String url = UriComponentsBuilder
+                    .fromHttpUrl(vehiculeServiceUrl + "/type/" + vehiculeId)
+                    .build()
+                    .toUriString();
+
+            System.out.print("Fetching Type attributes from vehiculeId:" + vehiculeId);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<String>() {
+                    }
+            );
+            String vehiculeType = response.getBody();
+            if (vehiculeType == null) {
+                System.out.println("Type vehicule is not found: " + vehiculeId);
+                throw new RuntimeException("Type vehicule not found");
+            }
+            System.out.println("Vehicule for vehicule ID" + vehiculeId + ": " + vehiculeType + " Type");
+            return vehiculeType;
+        } catch (Exception e) {
+            System.out.println("Error fetching HOrsePower: " + e.getMessage());
+            throw new RuntimeException("Horse Power fetching impossible", e);
+        }
+    }
+
+    public int getVehiculeCargoById(int vehiculeId){
+        try {
+            String url = UriComponentsBuilder
+                    .fromHttpUrl(vehiculeServiceUrl + "/cargo/" + vehiculeId)
+                    .build()
+                    .toUriString();
+
+            System.out.print("Fetching Cargo attributes from vehiculeId:" + vehiculeId);
+            ResponseEntity<Integer> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Integer>() {
+                    }
+            );
+            int vehiculeCargo = response.getBody();
+            if (vehiculeCargo == 0) {
+                System.out.println("Cargo vehicule is not found: " + vehiculeId);
+                throw new RuntimeException("Cargo vehicule not found");
+            }
+            System.out.println("Vehicule for vehicule ID" + vehiculeId + ": " + vehiculeCargo + " Type");
+            return vehiculeCargo;
+        } catch (Exception e) {
+            System.out.println("Error fetching HOrsePower: " + e.getMessage());
+            throw new RuntimeException("Horse Power fetching impossible", e);
+        }
+    }
+
 
     public int getDisplacementByVehiculeId(int vehiculeId) {
         try {
@@ -231,6 +300,7 @@ public class OrderService {
     public int calculateAge(LocalDate dateOfBirth) {
         return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
+
     public int calculateDayBooked(LocalDate startDate, LocalDate endDate) {
         return Period.between(startDate, endDate).getDays();
     }
