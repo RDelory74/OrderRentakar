@@ -21,12 +21,13 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
     private final RestTemplate restTemplate;
 
-    @Value("${service.user.url}")
+    @Value("${service.order.url:UserRentakar}")
     private String userServiceUrl;
 
-    @Value("${service.vehicule.url}")
+    @Value("${service.order.url:VehiculeRentakar}")
     private String vehiculeServiceUrl;
 
     @Value("${service.license.url}")
