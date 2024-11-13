@@ -24,10 +24,10 @@ public class OrderService {
     @Autowired
     private final RestTemplate restTemplate;
 
-    @Value("${service.order.url:UserRentakar}")
+    @Value("${service.user.url}")
     private String userServiceUrl;
 
-    @Value("${service.order.url:VehiculeRentakar}")
+    @Value("${service.vehicule.url}")
     private String vehiculeServiceUrl;
 
     @Value("${service.license.url}")
