@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class OrderControler {
     private final OrderService orderService;
 
@@ -20,25 +21,25 @@ public class OrderControler {
         return orderService.getAllOrders();
     }
 
-    @GetMapping("/order/{id}")
+    @GetMapping("/orders/{id}")
     public Order showOrderById(@PathVariable int id) {
         return orderService.getOrderById(id);
     }
 
-    @PostMapping("/order")
+    @PostMapping("/orders")
     public Order saveOrder(@RequestBody Order order) {
         return orderService.saveOrder(order);
     }
-    @PostMapping("/order/new")
+    @PostMapping("/orders/new")
     public Order createOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
 
-    @PutMapping("/order/{id}")
+    @PutMapping("/orders/{id}")
     public Order updateOrder(@PathVariable int id, @RequestBody Order order) {
         return orderService.updateOrderById(id, order);
     }
-    @DeleteMapping("order/{id}")
+    @DeleteMapping("orders/{id}")
     public Order deleteOrder(@PathVariable int id) {
         orderService.deleteOrder(id);
         return null;
